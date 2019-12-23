@@ -11,6 +11,13 @@ const authReducer = (state: any, action: any) => {
                 errorMessage: action.payload,
             };
         }
+        case 'clear_error_message': {
+            return {
+                ...state,
+                errorMessage: '',
+            };
+        }
+        case 'signin':
         case 'signup': {
             return {
                 errorMessage: '',
@@ -25,6 +32,10 @@ const authReducer = (state: any, action: any) => {
 /**
  * actions are functions that we call with dispatch and these functions return a function
  */
+const clearErrorMessage = (dispatch: any) => () => {
+    dispatch({ type: 'clear_error_message' });
+};
+
 const signup = (dispatch: any) => async ({ email, password }: any) => {
     try {
         const response = await trackerApi.post('/signup', {
@@ -42,8 +53,18 @@ const signup = (dispatch: any) => async ({ email, password }: any) => {
     }
 };
 
-const signin = (dispatch: any) => {
-    return ({ email, password }: any) => {};
+const signin = (dispatch: any) => async ({ email, password }: any) => {
+    try {
+        const response = await trackerApi.post('/signin', { email, password });
+        await AsyncStorage.setItem('token', response.data.token);
+        dispatch({ payload: response.data.token, type: 'signin' });
+        navigate('TrackList');
+    } catch (err) {
+        dispatch({
+            payload: 'Something went wrong with sign in',
+            type: 'add_error',
+        });
+    }
 };
 
 const signout = (dispatch: any) => {
@@ -52,6 +73,6 @@ const signout = (dispatch: any) => {
 
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { signin, signout, signup },
+    { clearErrorMessage, signin, signout, signup },
     { token: null, errorMessage: '' },
 );
