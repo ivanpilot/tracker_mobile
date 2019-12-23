@@ -6,7 +6,9 @@ import NavLink from '../components/NavLink';
 import { Context as AuthContext } from '../context/AuthContext';
 
 const SignupScreen = ({ navigation }: any) => {
-    const { state, signup, clearErrorMessage } = useContext(AuthContext);
+    const { state, signup, clearErrorMessage, automaticSignin } = useContext(
+        AuthContext,
+    );
 
     return (
         <View style={styles.container}>

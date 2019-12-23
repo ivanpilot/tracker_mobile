@@ -36,6 +36,16 @@ const clearErrorMessage = (dispatch: any) => () => {
     dispatch({ type: 'clear_error_message' });
 };
 
+const automaticSignin = (dispatch: any) => async () => {
+    const token = await AsyncStorage.getItem('token');
+    if (token) {
+        dispatch({ type: 'signin', payload: token });
+        navigate('TrackList');
+    } else {
+        navigate('loginFlow');
+    }
+};
+
 const signup = (dispatch: any) => async ({ email, password }: any) => {
     try {
         const response = await trackerApi.post('/signup', {
@@ -73,6 +83,6 @@ const signout = (dispatch: any) => {
 
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { clearErrorMessage, signin, signout, signup },
+    { clearErrorMessage, signin, signout, signup, automaticSignin },
     { token: null, errorMessage: '' },
 );
