@@ -54,7 +54,14 @@ export default (shouldTrack: boolean, callback: any) => {
              */
             setSubscriber(null);
         }
-    }, [shouldTrack]);
+
+        return () => {
+            if (subscriber) {
+                console.log('removing subscriber');
+                subscriber.remove();
+            }
+        };
+    }, [shouldTrack, callback]);
 
     /**
      * By convention, hooks return value through an array.
