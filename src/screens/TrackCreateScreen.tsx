@@ -13,15 +13,18 @@ import useLocation from '../hooks/useLocation';
  * Once TrackCreateScreen is wrapped by withNavigationFocus, we can access isFocused props that will help up determinate when a user is not focusing on a screen and as such, in this example, stop the geotracking that eats battery
  */
 const TrackCreateScreen = ({ isFocused }: any) => {
-    const { addLocation, state } = useContext(LocationContext);
+    const {
+        addLocation,
+        state: { recording },
+    } = useContext(LocationContext);
     const callback = useCallback(
         (location: any) => {
-            addLocation(location, state.recording);
+            addLocation(location, recording);
         },
-        [state.recording],
+        [recording],
     );
 
-    const [err] = useLocation(isFocused, callback);
+    const [err] = useLocation(isFocused || recording, callback);
     return (
         <SafeAreaView forceInset={{ top: 'always' }}>
             <Text h3={true}>Create a track</Text>
