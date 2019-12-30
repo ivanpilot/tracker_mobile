@@ -1,3 +1,6 @@
+/**
+ * This context is all about tracking the user location + storing point locations
+ */
 import createDataContext from './createDataContext';
 
 const locationReducer = (state: any, action: any) => {
@@ -32,6 +35,13 @@ const locationReducer = (state: any, action: any) => {
                 name: action.payload,
             };
         }
+        case 'reset': {
+            return {
+                ...state,
+                locations: [],
+                name: '',
+            };
+        }
         default:
             return state;
     }
@@ -56,11 +66,16 @@ const addLocation = (dispatch: any) => (location: any, recording: boolean) => {
     }
 };
 
+const reset = (dispatch: any) => () => {
+    dispatch({ type: 'reset' });
+};
+
 export const { Context, Provider } = createDataContext(
     locationReducer,
     {
         addLocation,
         changeName,
+        reset,
         startRecording,
         stopRecording,
     },
